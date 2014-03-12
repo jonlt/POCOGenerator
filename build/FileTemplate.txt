@@ -1,0 +1,8 @@
+﻿// This file is auto-generated
+using System;
+using System.Text;
+
+namespace {{NAMESPACE}}
+{
+{{CLASSES}}
+}
