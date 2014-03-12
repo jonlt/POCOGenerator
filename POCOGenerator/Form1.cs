@@ -106,7 +106,14 @@ namespace POCOGenerator
             
             int classCount = 0;
             var fileContentBuilder = new StringBuilder();
-            var fileTemplate = File.ReadAllText("FileTemplate.txt").Replace("{{NAMESPACE}}", tbNamespace.Text);
+
+            var fileTemplate = GetDefaultFileTemplate();
+            if (File.Exists("FileTemplate.txt"))
+            {
+                fileTemplate = File.ReadAllText("FileTemplate.txt");
+            }
+
+            fileTemplate = fileTemplate.Replace("{{NAMESPACE}}", tbNamespace.Text);
 
             var connectionString = GenerateConnectionString();
             using (var connection = new SqlConnection(connectionString))
@@ -159,8 +166,12 @@ namespace POCOGenerator
                 propertyList.Add(string.Format("public {0} {1} {{ get; set; }}", GetCLRTypeName(column.DataType, column.AllowDBNull), column.ColumnName));
             }
 
-            var classTemplate = File.ReadAllText("ClassTemplate.txt");
-
+            var classTemplate = GetDefaultClassTemplate();
+            if (File.Exists("ClassTemplate.txt"))
+            {
+                classTemplate = File.ReadAllText("ClassTemplate.txt");
+            }
+                
             var properties = string.Join("\r\n", propertyList);
             classTemplate = classTemplate.Replace("{{CLASSNAME}}", tbClassPrefix.Text + name);
             classTemplate = classTemplate.Replace("{{PROPERTIES}}", properties);
@@ -191,6 +202,16 @@ namespace POCOGenerator
             }
         }
 
+        private string GetDefaultFileTemplate()
+        {
+            string template = "// This file is auto-generated\r\nusing System;\r\nusing System.Text;\r\n\r\nnamespace {{NAMESPACE}}\r\n{\r\n{{CLASSES}}\r\n}";
+            return template;
+        }
 
+        private string GetDefaultClassTemplate()
+        {
+            string template = "public class {{CLASSNAME}}\r\n{\r\n{{PROPERTIES}}\r\n}\r\n";
+            return template;
+        }
     }
 }
