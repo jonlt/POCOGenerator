@@ -99,6 +99,10 @@ namespace POCOGenerator
             {
                 folder = folderBrowserDialog1.SelectedPath;
             }
+            else
+            {
+                return;
+            }
             
             int classCount = 0;
             var fileContentBuilder = new StringBuilder();
